@@ -2,11 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import css from './contactList.module.css';
 import {useDispatch, useSelector } from 'react-redux';
-import { onRemove } from '../../redux/contactsSlice.js';
+import { onRemove, updateFilter  } from '../../redux/contactsSlice.js';
 import Filter from 'components/Filter/Filter';
+import { persistor } from '../../redux/store';
 function ContactList() {
   const dispatch = useDispatch();
-
+  const handleRemove = (id) => {
+    dispatch(onRemove(id));
+    dispatch(updateFilter(''));
+    persistor.purge(); 
+  };
   const filter = useSelector((state) => state.contacts.filter);
   const contacts = useSelector((state) => state.contacts.contacts);
 
@@ -25,7 +30,7 @@ function ContactList() {
       <button
         type="button"
         className={css.button}
-        onClick={() => dispatch(onRemove(contact.id))}
+        onClick={() => handleRemove(contact.id)}
       >
         Delete
       </button>
